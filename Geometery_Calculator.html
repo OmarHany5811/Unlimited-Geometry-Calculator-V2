@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ultimate Geometry Calculator</title>
+
+<style>
+:root {
+    --bg: #0f2027;
+    --card: #1c1c1c;
+    --text: white;
+    --accent: #00c6ff;
+    --secondary: #0072ff;
+}
+
+.light {
+    --bg: #f4f4f4;
+    --card: white;
+    --text: #111;
+    --accent: #0077ff;
+    --secondary: #00c6ff;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Verdana, sans-serif;
+    transition: background 0.3s, color 0.3s;
+}
+
+body {
+    background: var(--bg);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+}
+
+.card {
+    width: 100%;
+    max-width: 850px;
+    background: var(--card);
+    padding: 30px;
+    border-radius: 20px;
+    color: var(--text);
+    text-align: center;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+}
+
+.top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.mode-btn {
+    background: var(--accent);
+    padding: 8px 15px;
+    border-radius: 20px;
+    cursor: pointer;
+    color: black;
+    font-weight: bold;
+    font-size: 13px;
+}
+
+/* Calculation Mode */
+.calc-goal-selector {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-bottom: 20px;
+    padding: 15px;
+    background: rgba(255,255,255,0.05);
+    border-radius: 12px;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+    gap: 8px;
+    margin-bottom: 20px;
+}
+
+.grid input, .calc-goal-selector input { display: none; }
+
+.grid label, .calc-goal-selector label {
+    padding: 10px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 12px;
+    border: 1px solid transparent;
+}
+
+.grid input:checked + label,
+.calc-goal-selector input:checked + label {
+    background: var(--accent);
+    color: black;
+    font-weight: bold;
+    border-color: var(--secondary);
+}
+
+.input-area {
+    margin: 20px 0;
+    max-height: 250px;
+    overflow-y: auto;
+    padding-right: 10px;
+}
+
+input[type=number] {
+    width: 100%;
+    padding: 12px;
+    margin: 5px 0;
+    border-radius: 8px;
+    border: 1px solid #444;
+    background: rgba(255,255,255,0.05);
+    color: var(--text);
+    outline: none;
+}
+
+button {
+    width: 100%;
+    padding: 15px;
+    margin-top: 10px;
+    background: var(--accent);
+    border: none;
+    border-radius: 8px;
+    font-weight: bold;
+    font-size: 16px;
+    cursor: pointer;
+    text-transform: uppercase;
+}
+
+button:hover { filter: brightness(1.1); }
+
+.result {
+    margin-top: 20px;
+    padding: 20px;
+    background: rgba(0, 198, 255, 0.1);
+    border-left: 5px solid var(--accent);
+    border-radius: 8px;
+    min-height: 60px;
+    text-align: left;
+}
+
+.preview {
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+}
+
+svg { width: 200px; height: 200px; }
+
+polygon {
+    fill: var(--accent);
+    fill-opacity: 0.2;
+    stroke: var(--accent);
+    stroke-width: 3;
+    stroke-linejoin: round;
+}
+</style>
+</head>
+<body>
+
+<div class="card">
+<div class="top">
+<h2>Geometry Calculator</h2>
+<div class="mode-btn" onclick="toggleTheme()">Light / Dark Mode</div>
+</div>
+
+<div class="calc-goal-selector">
+<input type="radio" name="calcGoal" value="area" id="goalArea" checked onclick="updateUI()">
+<label for="goalArea">Calculate Area</label>
+
+<input type="radio" name="calcGoal" value="perimeter" id="goalPerim" onclick="updateUI()">
+<label for="goalPerim">Calculate Perimeter</label>
+</div>
+
+<!-- UPDATED SHAPE BUTTONS -->
+<div class="grid" id="shapeGrid">
+
+<input type="radio" name="shape" value="triangle" id="triangle" onclick="updateUI()">
+<label for="triangle">Triangle</label>
+
+<input type="radio" name="shape" value="quadrilateral" id="quadrilateral" onclick="updateUI()">
+<label for="quadrilateral">Quadrilateral</label>
+
+<input type="radio" name="shape" value="pentagon" id="pentagon" onclick="updateUI()">
+<label for="pentagon">Pentagon</label>
+
+<input type="radio" name="shape" value="hexagon" id="hexagon" onclick="updateUI()">
+<label for="hexagon">Hexagon</label>
+
+<input type="radio" name="shape" value="heptagon" id="heptagon" onclick="updateUI()">
+<label for="heptagon">Heptagon</label>
+
+<input type="radio" name="shape" value="octagon" id="octagon" onclick="updateUI()">
+<label for="octagon">Octagon</label>
+
+<input type="radio" name="shape" value="nonagon" id="nonagon" onclick="updateUI()">
+<label for="nonagon">Nonagon</label>
+
+<input type="radio" name="shape" value="decagon" id="decagon" onclick="updateUI()">
+<label for="decagon">Decagon</label>
+
+<input type="radio" name="shape" value="hendecagon" id="hendecagon" onclick="updateUI()">
+<label for="hendecagon">Hendecagon</label>
+
+<input type="radio" name="shape" value="dodecagon" id="dodecagon" onclick="updateUI()">
+<label for="dodecagon">Dodecagon</label>
+
+<input type="radio" name="shape" value="tridecagon" id="tridecagon" onclick="updateUI()">
+<label for="tridecagon">Tridecagon</label>
+
+<input type="radio" name="shape" value="tetradecagon" id="tetradecagon" onclick="updateUI()">
+<label for="tetradecagon">Tetradecagon</label>
+
+<input type="radio" name="shape" value="pentadecagon" id="pentadecagon" onclick="updateUI()">
+<label for="pentadecagon">Pentadecagon</label>
+
+</div>
+
+<div id="typeSelector" style="margin-bottom: 15px; font-weight: bold;"></div>
+<div class="input-area" id="inputs"></div>
+
+<button id="calcBtn" onclick="calculate()">Calculate</button>
+<div class="result" id="result">Please select a shape to start.</div>
+
+<div class="preview">
+<svg id="preview" viewBox="0 0 220 220"></svg>
+</div>
+</div>
+
+<script>
+
+const sidesMap = {
+triangle: 3, quadrilateral: 4, pentagon: 5, hexagon: 6,
+heptagon: 7, octagon: 8, nonagon: 9, decagon: 10,
+hendecagon: 11, dodecagon: 12, tridecagon: 13,
+tetradecagon: 14, pentadecagon: 15
+};
+
+function toggleTheme(){
+document.body.classList.toggle("light");
+}
+
+function getVal(name){
+let radios=document.getElementsByName(name);
+for(let r of radios) if(r.checked) return r.value;
+return null;
+}
+
+function updateUI(){
+let shape=getVal("shape");
+let goal=getVal("calcGoal");
+if(!shape) return;
+
+document.getElementById("calcBtn").innerText=`Calculate ${goal}`;
+
+document.getElementById("typeSelector").innerHTML=`
+<label><input type="radio" name="type" value="regular" checked onclick="updateInputs()"> Regular</label>
+<label style="margin-left:20px;"><input type="radio" name="type" value="irregular" onclick="updateInputs()"> Irregular</label>
+`;
+
+updateInputs();
+drawPreview();
+}
+
+function updateInputs(){
+let shape=getVal("shape");
+let type=getVal("type");
+let n=sidesMap[shape];
+let div=document.getElementById("inputs");
+div.innerHTML="";
+
+if(type==="regular"){
+div.innerHTML=`<input type="number" id="side" placeholder="Enter side length (s)">`;
+}else{
+for(let i=1;i<=n;i++){
+div.innerHTML+=`<input type="number" id="side${i}" placeholder="Side ${i} length">`;
+}
+}
+}
+
+function calculate(){
+let shape=getVal("shape");
+let type=getVal("type");
+let goal=getVal("calcGoal");
+let n=sidesMap[shape];
+let resultDiv=document.getElementById("result");
+
+if(!shape) return;
+
+try{
+if(type==="regular"){
+let s=parseFloat(document.getElementById("side").value);
+if(isNaN(s)||s<=0) throw "Enter a valid side length.";
+
+if(goal==="area"){
+let area=(n*s*s)/(4*Math.tan(Math.PI/n));
+resultDiv.innerHTML=`<strong>Shape:</strong> Regular ${shape}<br>
+<strong>Area:</strong> ${area.toFixed(4)} units²`;
+}else{
+let perim=n*s;
+resultDiv.innerHTML=`<strong>Shape:</strong> Regular ${shape}<br>
+<strong>Perimeter:</strong> ${perim.toFixed(2)} units`;
+}
+}else{
+let sides=[];
+for(let i=1;i<=n;i++){
+let v=parseFloat(document.getElementById("side"+i).value);
+if(isNaN(v)||v<=0) throw "Fill all side fields.";
+sides.push(v);
+}
+
+if(goal==="area"){
+let avg=sides.reduce((a,b)=>a+b,0)/n;
+let area=(n*avg*avg)/(4*Math.tan(Math.PI/n));
+resultDiv.innerHTML=`<strong>Shape:</strong> Irregular ${shape}<br>
+<strong>Estimated Area:</strong> ${area.toFixed(4)} units²<br>
+<small>(Estimated using average side length)</small>`;
+}else{
+let perim=sides.reduce((a,b)=>a+b,0);
+resultDiv.innerHTML=`<strong>Shape:</strong> Irregular ${shape}<br>
+<strong>Perimeter:</strong> ${perim.toFixed(2)} units`;
+}
+}
+}catch(err){
+resultDiv.innerHTML=`<span style="color:#ff4d4d">${err}</span>`;
+}
+}
+
+function drawPreview(){
+let shape=getVal("shape");
+let n=sidesMap[shape];
+let points="";
+let cx=110, cy=110, r=90;
+
+for(let i=0;i<n;i++){
+let angle=(2*Math.PI*i)/n-Math.PI/2;
+let x=cx+r*Math.cos(angle);
+let y=cy+r*Math.sin(angle);
+points+=`${x},${y} `;
+}
+
+document.getElementById("preview").innerHTML=`<polygon points="${points}"/>`;
+}
+
+</script>
+</body>
+</html>
